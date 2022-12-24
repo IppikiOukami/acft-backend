@@ -13,11 +13,12 @@ import java.util.Date;
 public class ServiceMember {
     @Id
     private int DoD_ID;
-    private int Age;
     private int NoTests;
+    private int platoon;
     private String DoA;
     private String DoB;
     private String FirstName;
+    private String Gender;
     private String LastName;
     private String MOS;
 }

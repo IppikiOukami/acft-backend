@@ -16,6 +16,9 @@ public class Test {
     private int TestNo;
     private int DoD_ID;
 
+    //Age of SM at time of test
+    private int Age;
+
     //Test number for given service member
     private int SMTestNo;
 
@@ -36,4 +39,7 @@ public class Test {
 
     //2 mile run
     private int raw2MR;
+
+    //Date when test was taken
+    private String DoT;
 }
