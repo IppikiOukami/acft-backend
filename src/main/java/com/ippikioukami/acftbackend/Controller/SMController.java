@@ -5,8 +5,8 @@ import com.ippikioukami.acftbackend.Repositories.SMRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.ArrayList;
+import java.util.Arrays;
 
 @Controller
 @CrossOrigin
@@ -16,18 +16,26 @@ public class SMController {
     private SMRepository smrepo;
 
     @PostMapping(path = "/addSMs")
-    public @ResponseBody ArrayList<String[]> addNewSMs(
-            @RequestParam String[][] SMs
+    public @ResponseBody String[][] addNewSMs(
+            @RequestParam String SMs,
+            @RequestParam int len
     ){
-        ArrayList<String[]> errors = new ArrayList<String[]>();
-        for(String[] member : SMs) {
+        String[] arr = SMs.split(":");
+        String[][] personnel = new String [len][1];
+        for(int i = 0; i < len; i++){
+            personnel[i] = arr[i].split(",");
+            System.out.println(personnel[i]);
+        }
+        String[][] errors = new String[len][1];
+        for(String[] member : personnel) {
+            System.out.println(member);
             ServiceMember createSM = new ServiceMember();
             try{
                 createSM.setDoD_ID(Integer.parseInt(member[0]));
                 createSM.setPlatoon(Integer.parseInt(member[1]));
                 createSM.setNoTests(Integer.parseInt(member[2]));
             }catch (NumberFormatException e){
-                errors.add(member);
+                errors[--len] = member;
                 continue;
             }
             createSM.setDoA(member[3]);
