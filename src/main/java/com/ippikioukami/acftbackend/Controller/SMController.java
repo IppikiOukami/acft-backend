@@ -5,6 +5,7 @@ import com.ippikioukami.acftbackend.Repositories.SMRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -16,37 +17,33 @@ public class SMController {
     private SMRepository smrepo;
 
     @PostMapping(path = "/addSMs")
-    public @ResponseBody String[][] addNewSMs(
-            @RequestParam String SMs,
-            @RequestParam int len
+    public @ResponseBody String addNewSMs(
+            @RequestParam String SMString
     ){
-        String[] arr = SMs.split(":");
-        String[][] personnel = new String [len][1];
-        for(int i = 0; i < len; i++){
-            personnel[i] = arr[i].split(",");
-            System.out.println(personnel[i]);
-        }
-        String[][] errors = new String[len][1];
-        for(String[] member : personnel) {
-            System.out.println(member);
+        SMString = SMString.substring(1, SMString.length()-1).replaceAll("\\[","");
+        String[][] personnel = new String[][]{SMString.split("]")};
+        ArrayList<String> errors = new ArrayList<String>();
+        for(String member : personnel[0]) {
             ServiceMember createSM = new ServiceMember();
+            String[] memberData = member.split(",");
             try{
-                createSM.setDoD_ID(Integer.parseInt(member[0]));
-                createSM.setPlatoon(Integer.parseInt(member[1]));
-                createSM.setNoTests(Integer.parseInt(member[2]));
+                createSM.setDoD_ID(Integer.parseInt(memberData[0]));
+                createSM.setPlatoon(Integer.parseInt(memberData[1]));
+                createSM.setNoTests(Integer.parseInt(memberData[2]));
             }catch (NumberFormatException e){
-                errors[--len] = member;
+                System.out.println(e.getMessage());
+                errors.add(Arrays.toString(memberData));
                 continue;
             }
-            createSM.setDoA(member[3]);
-            createSM.setDoB(member[4]);
-            createSM.setFirstName(member[5]);
-            createSM.setLastName(member[6]);
-            createSM.setGender(member[7]);
-            createSM.setMOS(member[8]);
+            createSM.setDoA(memberData[3]);
+            createSM.setDoB(memberData[4]);
+            createSM.setFirstName(memberData[5]);
+            createSM.setLastName(memberData[6]);
+            createSM.setGender(memberData[7]);
+            createSM.setMOS(memberData[8]);
             smrepo.save(createSM);
         }
-        return errors;
+        return errors.toString();
     }
 
     @GetMapping(path = "/getAllSMs")
